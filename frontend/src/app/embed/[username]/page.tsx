@@ -92,34 +92,17 @@ export default async function EmbedPage({ params, searchParams }: PageProps) {
   }));
 
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="robots" content="noindex" />
-        <link rel="stylesheet" href="/embed.css" />
-      </head>
-      <body
-        style={{
-          margin: 0,
-          padding: 8,
-          background: "transparent",
-          fontFamily: "system-ui, -apple-system, sans-serif",
-        }}
-      >
-        <EmbedWidget
-          username={profile.username}
-          displayName={profile.displayName}
-          bio={profile.bio}
-          avatarUrl={profile.avatarUrl}
-          acceptedAssets={profile.acceptedAssets}
-          stats={stats}
-          recentSupporters={recentSupporters}
-          theme={theme}
-          size={size}
-          profileUrl={profileUrl}
-        />
-      </body>
-    </html>
+    <EmbedWidget
+      username={profile.username}
+      displayName={profile.displayName}
+      bio={profile.bio}
+      avatarUrl={profile.avatarUrl}
+      acceptedAssets={profile.acceptedAssets}
+      stats={stats}
+      recentSupporters={recentSupporters}
+      theme={theme}
+      size={size}
+      profileUrl={profileUrl}
+    />
   );
 }
