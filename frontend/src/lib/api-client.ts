@@ -29,9 +29,11 @@ export async function apiFetch(
       window.location.pathname + window.location.search,
     );
 
+    // Dispatch custom event so listeners can react without a full reload
+    window.dispatchEvent(new CustomEvent("auth:expired"));
+
     // Use history.replaceState to preserve history stack instead of window.location.href
     window.history.replaceState(null, "", "/");
-    window.location.reload();
   }
 
   return res;
