@@ -24,10 +24,9 @@ type ProfileStats = {
   assetTotals: Array<{ assetCode: string; total: string }>;
 };
 
-type LeaderboardEntry = {
-  rank: number;
+type TransactionEntry = {
   supporterAddress: string;
-  totalAmount: string;
+  amount: string;
   assetCode: string;
 };
 
@@ -47,13 +46,13 @@ async function getStats(username: string): Promise<ProfileStats | null> {
   return res.json();
 }
 
-async function getLeaderboard(username: string): Promise<LeaderboardEntry[]> {
-  const res = await fetch(`${API_BASE_URL}/profiles/${username}/leaderboard`, {
+async function getRecentTransactions(username: string): Promise<TransactionEntry[]> {
+  const res = await fetch(`${API_BASE_URL}/profiles/${username}/transactions?limit=5`, {
     next: { revalidate: 60 },
   });
   if (!res.ok) return [];
-  const body = await res.json() as { leaderboard?: LeaderboardEntry[] };
-  return (body.leaderboard ?? []).slice(0, 5);
+  const body = await res.json() as { transactions?: TransactionEntry[] };
+  return (body.transactions ?? []).slice(0, 5);
 }
 
 export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
@@ -69,9 +68,9 @@ export default async function EmbedPage({ params, searchParams }: PageProps) {
   const profile = await getProfile(params.username);
   if (!profile) notFound();
 
-  const [stats, leaderboard] = await Promise.all([
+  const [stats, recentTransactions] = await Promise.all([
     getStats(params.username),
-    getLeaderboard(params.username),
+    getRecentTransactions(params.username),
   ]);
 
   const theme: EmbedTheme =
@@ -85,9 +84,9 @@ export default async function EmbedPage({ params, searchParams }: PageProps) {
 
   const profileUrl = `${SITE_URL}/profile/${profile.username}`;
 
-  const recentSupporters = leaderboard.map((e) => ({
+  const recentSupporters = recentTransactions.map((e) => ({
     supporterAddress: e.supporterAddress,
-    totalAmount: e.totalAmount,
+    totalAmount: e.amount,
     assetCode: e.assetCode,
   }));
 
